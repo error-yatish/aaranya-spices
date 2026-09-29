@@ -1,0 +1,78 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --bg-ivory: #F7F4ED;
+    --bg-sand: #EFECE3;
+    --bg-forest: #182B21;
+    --bg-forest-deep: #0F1D16;
+    --text-charcoal: #1C1B18;
+    --text-umbral: #5A564E;
+    --text-muted: #847E74;
+    --accent-ochre: #C89236;
+    --accent-gold: #9E824C;
+    --accent-earth: #6D4C38;
+    --border-warm: #E2DDD2;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--text-charcoal);
+    background-color: var(--bg-ivory);
+  }
+
+  /* Modern Web Guidance: improve-text-layout-and-legibility */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    text-wrap: balance;
+  }
+
+  p, blockquote, li {
+    text-wrap: pretty;
+  }
+}
+
+.font-serif-editorial {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+}
+
+.font-sans-ui {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.font-mono-spec {
+  font-family: 'JetBrains Mono', monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Subtle custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F7F4ED;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #C9C3B6;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #9E824C;
+}
+
+/* Calm, slow luxury transitions */
+.luxury-transition {
+  transition: all 500ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.image-zoom-slow {
+  transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1), opacity 500ms cubic-bezier(0.22, 1, 0.36, 1);
+}
