@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Lock, ShieldCheck, CheckCircle2, ArrowLeft } from 'lucide-react';
 import { SEOHead } from '../components/seo/SEOHead';
 import { useShop } from '../context/ShopContext';
+import { useAuth } from '../context/AuthContext';
 import { CheckoutFormData } from '../types/ecommerce';
 import {
   calculateOrderTotals,
@@ -30,15 +31,16 @@ const INDIAN_STATES = [
 
 export const CheckoutPage: React.FC = () => {
   const { cart, couponCode, clearCart } = useShop();
+  const { user } = useAuth();
 
   const [formData, setFormData] = useState<CheckoutFormData>({
-    name: '',
-    mobile: '',
-    email: '',
-    address: '',
-    city: '',
-    state: 'Maharashtra',
-    pinCode: '',
+    name: user?.fullName || '',
+    mobile: user?.mobile || '',
+    email: user?.email || '',
+    address: user?.defaultAddress || '',
+    city: user?.defaultCity || '',
+    state: user?.defaultState || 'Maharashtra',
+    pinCode: user?.defaultPincode || '',
     shippingMethod: 'standard',
     paymentMethod: 'upi'
   });

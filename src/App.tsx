@@ -2,6 +2,7 @@ import React, { useEffect, Suspense, lazy } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { X, CheckCircle2 } from 'lucide-react';
 import { ShopProvider, useShop } from './context/ShopContext';
+import { AuthProvider } from './context/AuthContext';
 import { Header } from './components/layout/Header';
 import { Footer } from './components/layout/Footer';
 import { CartDrawer } from './components/layout/CartDrawer';
@@ -48,6 +49,12 @@ const SearchPage = lazy(() =>
 );
 const LegalPage = lazy(() =>
   import('./pages/LegalPage').then((m) => ({ default: m.LegalPage }))
+);
+const AdminPage = lazy(() =>
+  import('./pages/AdminPage').then((m) => ({ default: m.AdminPage }))
+);
+const AccountPage = lazy(() =>
+  import('./pages/AccountPage').then((m) => ({ default: m.AccountPage }))
 );
 
 const ScrollToTop: React.FC = () => {
@@ -117,90 +124,94 @@ const ToastContainer: React.FC = () => {
 
 export const App: React.FC = () => {
   return (
-    <ShopProvider>
-      <ScrollToTop />
-      <div className="min-h-screen flex flex-col bg-[#F7F4ED] text-[#1C1B18]">
-        <a
-          href="#main-content"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:bg-[#182B21] focus:text-[#F7F4ED] focus:px-4 focus:py-2 focus:text-xs"
-        >
-          Skip to main content
-        </a>
-        <Header />
-        <CartDrawer />
-        <SearchOverlay />
-        <main id="main-content" className="flex-1">
-          <Suspense fallback={<PageLoader />}>
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/shop" element={<ShopPage />} />
-              <Route
-                path="/shop/whole-spices"
-                element={<ShopPage forcedCategory="whole-spices" />}
-              />
-              <Route
-                path="/whole-spices"
-                element={<ShopPage forcedCategory="whole-spices" />}
-              />
-              <Route
-                path="/shop/ground-spices"
-                element={<ShopPage forcedCategory="ground-spices" />}
-              />
-              <Route
-                path="/ground-spices"
-                element={<ShopPage forcedCategory="ground-spices" />}
-              />
-              <Route
-                path="/shop/spice-blends"
-                element={<ShopPage forcedCategory="spice-blends" />}
-              />
-              <Route
-                path="/spice-blends"
-                element={<ShopPage forcedCategory="spice-blends" />}
-              />
-              <Route
-                path="/blends"
-                element={<ShopPage forcedCategory="spice-blends" />}
-              />
-              <Route path="/shop/:slug" element={<ProductDetailPage />} />
-              <Route path="/about" element={<AboutPage />} />
-              <Route path="/our-story" element={<AboutPage />} />
-              <Route path="/sourcing" element={<SourcingPage />} />
-              <Route path="/recipes" element={<RecipesPage />} />
-              <Route path="/recipes/:slug" element={<RecipeDetailPage />} />
-              <Route path="/journal" element={<JournalPage />} />
-              <Route path="/journal/:slug" element={<JournalDetailPage />} />
-              <Route path="/contact" element={<ContactPage />} />
-              <Route path="/faq" element={<FaqPage />} />
-              <Route path="/cart" element={<CartPage />} />
-              <Route path="/checkout" element={<CheckoutPage />} />
-              <Route path="/search" element={<SearchPage />} />
-              <Route path="/privacy" element={<LegalPage type="privacy" />} />
-              <Route path="/terms" element={<LegalPage type="terms" />} />
-              <Route
-                path="/shipping-returns"
-                element={<LegalPage type="shipping-returns" />}
-              />
-              <Route
-                path="/shipping"
-                element={<LegalPage type="shipping-returns" />}
-              />
-              <Route
-                path="/returns"
-                element={<LegalPage type="shipping-returns" />}
-              />
-              <Route
-                path="/refund-policy"
-                element={<LegalPage type="shipping-returns" />}
-              />
-              <Route path="*" element={<ShopPage />} />
-            </Routes>
-          </Suspense>
-        </main>
-        <Footer />
-        <ToastContainer />
-      </div>
-    </ShopProvider>
+    <AuthProvider>
+      <ShopProvider>
+        <ScrollToTop />
+        <div className="min-h-screen flex flex-col bg-[#F7F4ED] text-[#1C1B18]">
+          <a
+            href="#main-content"
+            className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:bg-[#182B21] focus:text-[#F7F4ED] focus:px-4 focus:py-2 focus:text-xs"
+          >
+            Skip to main content
+          </a>
+          <Header />
+          <CartDrawer />
+          <SearchOverlay />
+          <main id="main-content" className="flex-1">
+            <Suspense fallback={<PageLoader />}>
+              <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/shop" element={<ShopPage />} />
+                <Route
+                  path="/shop/whole-spices"
+                  element={<ShopPage forcedCategory="whole-spices" />}
+                />
+                <Route
+                  path="/whole-spices"
+                  element={<ShopPage forcedCategory="whole-spices" />}
+                />
+                <Route
+                  path="/shop/ground-spices"
+                  element={<ShopPage forcedCategory="ground-spices" />}
+                />
+                <Route
+                  path="/ground-spices"
+                  element={<ShopPage forcedCategory="ground-spices" />}
+                />
+                <Route
+                  path="/shop/spice-blends"
+                  element={<ShopPage forcedCategory="spice-blends" />}
+                />
+                <Route
+                  path="/spice-blends"
+                  element={<ShopPage forcedCategory="spice-blends" />}
+                />
+                <Route
+                  path="/blends"
+                  element={<ShopPage forcedCategory="spice-blends" />}
+                />
+                <Route path="/shop/:slug" element={<ProductDetailPage />} />
+                <Route path="/about" element={<AboutPage />} />
+                <Route path="/our-story" element={<AboutPage />} />
+                <Route path="/sourcing" element={<SourcingPage />} />
+                <Route path="/recipes" element={<RecipesPage />} />
+                <Route path="/recipes/:slug" element={<RecipeDetailPage />} />
+                <Route path="/journal" element={<JournalPage />} />
+                <Route path="/journal/:slug" element={<JournalDetailPage />} />
+                <Route path="/contact" element={<ContactPage />} />
+                <Route path="/faq" element={<FaqPage />} />
+                <Route path="/cart" element={<CartPage />} />
+                <Route path="/checkout" element={<CheckoutPage />} />
+                <Route path="/search" element={<SearchPage />} />
+                <Route path="/privacy" element={<LegalPage type="privacy" />} />
+                <Route path="/terms" element={<LegalPage type="terms" />} />
+                <Route
+                  path="/shipping-returns"
+                  element={<LegalPage type="shipping-returns" />}
+                />
+                <Route
+                  path="/shipping"
+                  element={<LegalPage type="shipping-returns" />}
+                />
+                <Route
+                  path="/returns"
+                  element={<LegalPage type="shipping-returns" />}
+                />
+                <Route
+                  path="/refund-policy"
+                  element={<LegalPage type="shipping-returns" />}
+                />
+                <Route path="/account" element={<AccountPage />} />
+                <Route path="/admin" element={<AdminPage />} />
+                <Route path="*" element={<ShopPage />} />
+              </Routes>
+            </Suspense>
+          </main>
+          <Footer />
+          <ToastContainer />
+        </div>
+      </ShopProvider>
+    </AuthProvider>
   );
 };
 export default App;

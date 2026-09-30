@@ -3,7 +3,7 @@ import { Link, NavLink, useLocation } from 'react-router-dom';
 import { Search, User, ShoppingBag, Menu, X, ArrowRight } from 'lucide-react';
 import { Logo } from '../ui/Logo';
 import { useShop } from '../../context/ShopContext';
-import { Modal, Button } from '../ui/Primitives';
+import { useAuth } from '../../context/AuthContext';
 
 const NAV_LINKS = [
   { label: 'Shop', href: '/shop', exact: true },
@@ -18,13 +18,10 @@ export const Header: React.FC = () => {
   const {
     cartCount,
     setIsCartDrawerOpen,
-    setIsSearchOpen,
-    isAccountModalOpen,
-    setIsAccountModalOpen
+    setIsSearchOpen
   } = useShop();
+  const { user } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [accountEmail, setAccountEmail] = useState('');
-  const [accountMessage, setAccountMessage] = useState('');
   const location = useLocation();
 
   useEffect(() => {
@@ -40,14 +37,6 @@ export const Header: React.FC = () => {
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
   }, []);
-
-  const handleAccountSignIn = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!accountEmail.trim()) return;
-    setAccountMessage(
-      `A one-time sign-in link has been prepared for ${accountEmail}. (Customer accounts API ready)`
-    );
-  };
 
   return (
     <>
@@ -112,15 +101,16 @@ export const Header: React.FC = () => {
               <span className="hidden xl:inline">Search</span>
             </button>
 
-            <button
-              type="button"
-              onClick={() => setIsAccountModalOpen(true)}
+            <Link
+              to="/account"
               aria-label="Customer account"
-              className="hidden sm:inline-flex items-center gap-1.5 text-xs uppercase tracking-[0.14em] text-[#1C1B18] hover:text-[#6D4C38] p-1.5 cursor-pointer"
+              className="hidden sm:inline-flex items-center gap-1.5 text-xs uppercase tracking-[0.14em] text-[#1C1B18] hover:text-[#6D4C38] p-1.5"
             >
               <User size={19} strokeWidth={1.6} />
-              <span className="hidden xl:inline">Account</span>
-            </button>
+              <span className="hidden xl:inline">
+                {user ? user.fullName.split(' ')[0] : 'Account'}
+              </span>
+            </Link>
 
             <button
               type="button"
@@ -211,17 +201,14 @@ export const Header: React.FC = () => {
             </div>
 
             <div className="pt-6 border-t border-[#E2DDD2] space-y-4">
-              <button
-                type="button"
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  setIsAccountModalOpen(true);
-                }}
+              <Link
+                to="/account"
+                onClick={() => setMobileMenuOpen(false)}
                 className="w-full py-3 px-4 border border-[#182B21] text-xs uppercase tracking-[0.16em] text-[#182B21] font-medium flex items-center justify-center gap-2"
               >
                 <User size={15} />
-                <span>Account / Sign In</span>
-              </button>
+                <span>{user ? `Account (${user.fullName})` : 'Account / Sign In'}</span>
+              </Link>
               <p className="text-[11px] text-center text-[#5A564E] uppercase tracking-[0.16em]">
                 Pure. Rich. Authentic.
               </p>
@@ -229,48 +216,6 @@ export const Header: React.FC = () => {
           </div>
         </div>
       )}
-
-      {/* Account Modal */}
-      <Modal
-        isOpen={isAccountModalOpen}
-        onClose={() => {
-          setIsAccountModalOpen(false);
-          setAccountMessage('');
-        }}
-        title="The Aaranya Account"
-      >
-        <p className="text-sm text-[#5A564E] leading-relaxed">
-          Sign in to view past spice orders, manage saved delivery addresses, or track an active shipment.
-        </p>
-        {accountMessage ? (
-          <div className="mt-4 p-4 bg-[#EFECE3] border border-[#C89236] text-xs text-[#1C1B18] leading-relaxed">
-            {accountMessage}
-          </div>
-        ) : (
-          <form onSubmit={handleAccountSignIn} className="mt-5 space-y-4">
-            <div>
-              <label
-                htmlFor="account-email"
-                className="block text-xs uppercase tracking-[0.14em] text-[#1C1B18] mb-2"
-              >
-                Email Address
-              </label>
-              <input
-                id="account-email"
-                type="email"
-                required
-                value={accountEmail}
-                onChange={(e) => setAccountEmail(e.target.value)}
-                placeholder="you@example.com"
-                className="w-full bg-[#F7F4ED] border border-[#D5CFC2] px-4 py-3 text-sm focus:outline-none focus:border-[#182B21]"
-              />
-            </div>
-            <Button type="submit" variant="primary" fullWidth>
-              Send Sign-In Link
-            </Button>
-          </form>
-        )}
-      </Modal>
     </>
   );
 };

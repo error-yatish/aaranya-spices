@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Mail, Phone, MessageCircle, MapPin, CheckCircle2 } from 'lucide-react';
 import { SEOHead } from '../components/seo/SEOHead';
 import { Breadcrumbs, Button } from '../components/ui/Primitives';
+import { submitContactInquiry } from '../services/backendService';
 
 export const ContactPage: React.FC = () => {
   const [submitted, setSubmitted] = useState(false);
@@ -13,8 +14,15 @@ export const ContactPage: React.FC = () => {
     message: ''
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    await submitContactInquiry({
+      name: form.name,
+      email: form.email,
+      phone: form.phone,
+      subject: form.topic,
+      message: form.message
+    });
     setSubmitted(true);
   };
 

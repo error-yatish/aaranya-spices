@@ -1,4 +1,5 @@
 import { CheckoutFormData, CartItem } from '../types/ecommerce';
+import { persistOrderRecord } from './backendService';
 
 export const FREE_SHIPPING_THRESHOLD = 999;
 export const STANDARD_SHIPPING_FEE = 85;
@@ -19,6 +20,7 @@ export interface OrderConfirmationResult {
   createdAt: string;
   estimatedDelivery: string;
   paymentProviderStatus: 'READY_FOR_GATEWAY_WEBHOOK' | 'COD_CONFIRMED';
+  storageEngine: 'supabase' | 'local_db';
   customer: CheckoutFormData;
   items: CartItem[];
   pricing: OrderSummaryCalculation;
@@ -63,28 +65,35 @@ export function calculateOrderTotals(
 }
 
 /**
- * Clean API-ready checkout abstraction.
- * Ready to be connected to Razorpay / Stripe / Shiprocket / custom backend API endpoints.
+ * Submits order to Supabase PostgreSQL (`orders` + `order_items` + atomic inventory decrement)
+ * and prepares Razorpay / Shiprocket gateway hooks.
  */
 export async function submitOrderToProvider(
   formData: CheckoutFormData,
   items: CartItem[],
   couponCode: string
 ): Promise<OrderConfirmationResult> {
-  // Simulate network latency for API-ready order creation
-  await new Promise((resolve) => setTimeout(resolve, 650));
-
   const pricing = calculateOrderTotals(items, couponCode, formData.shippingMethod);
   const randomSuffix = Math.floor(100000 + Math.random() * 900000);
+  const orderReference = `AAR-2026-${randomSuffix}`;
+
+  const stored = await persistOrderRecord(
+    orderReference,
+    formData,
+    items,
+    couponCode,
+    pricing
+  );
 
   return {
     success: true,
-    orderReference: `AAR-2026-${randomSuffix}`,
-    createdAt: new Date().toISOString(),
+    orderReference: stored.orderReference,
+    createdAt: stored.createdAt,
     estimatedDelivery:
       formData.shippingMethod === 'express' ? '2–3 Business Days' : '4–6 Business Days',
     paymentProviderStatus:
       formData.paymentMethod === 'cod' ? 'COD_CONFIRMED' : 'READY_FOR_GATEWAY_WEBHOOK',
+    storageEngine: stored.storageEngine,
     customer: formData,
     items,
     pricing

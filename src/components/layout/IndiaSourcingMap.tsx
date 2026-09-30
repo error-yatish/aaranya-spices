@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Sprout, MapPin, Users, Cog, ShieldCheck, Package } from 'lucide-react';
+import { INDIA_STATE_PATHS } from '../../data/indiaMapPaths';
 
 interface SourcingStage {
   id: string;
@@ -75,93 +76,161 @@ const SOURCING_STAGES: SourcingStage[] = [
 ];
 
 interface MapPinRegion {
-  id: string;
+  id: 'north' | 'west' | 'central' | 'south';
+  shortTag: string;
   label: string;
+  statesText: string;
   spices: string;
   cx: number;
   cy: number;
+  coordinates: string;
   note: string;
 }
 
 const INDIA_MAP_PINS: MapPinRegion[] = [
   {
     id: 'north',
+    shortTag: 'Northern Valleys',
     label: 'Northern Valleys · [SOURCING REGION]',
+    statesText: 'Jammu & Kashmir · Ladakh · Himachal · Uttarakhand',
     spices: 'Kashmiri Chilli · Culinary Aromatics',
-    cx: 165,
-    cy: 78,
-    note: 'Cool mountain air and crisp autumn sun ideal for slow-drying whole red chillies with deep natural pigment.'
+    cx: 101,
+    cy: 62,
+    coordinates: '34.0° N, 74.8° E',
+    note: 'Cool mountain air and crisp autumn sun ideal for slow-drying whole red chillies with deep natural pigment and gentle warmth.'
   },
   {
     id: 'west',
+    shortTag: 'Western Seed Belt',
     label: 'Western Seed Belt · [SOURCING REGION]',
+    statesText: 'Gujarat · Rajasthan',
     spices: 'Whole Cumin (Jeera) · Coriander Seeds',
-    cx: 112,
-    cy: 195,
-    note: 'Dry winter sunshine and mineral-rich alluvial soils suited to aromatic seed crops like cumin and dhaniya.'
+    cx: 71,
+    cy: 199,
+    coordinates: '23.8° N, 72.4° E',
+    note: 'Dry winter sunshine and mineral-rich alluvial soils suited to aromatic seed crops like cumin (jeera) and coriander (dhaniya).'
   },
   {
     id: 'central',
+    shortTag: 'Deccan Plateau',
     label: 'Deccan & Central Plateau · [SOURCING REGION]',
+    statesText: 'Maharashtra · Telangana · Andhra Pradesh · Madhya Pradesh',
     spices: 'Cured Turmeric Rhizomes · Dry Ginger',
-    cx: 185,
-    cy: 255,
-    note: 'Warm tropical growing seasons followed by dry winter harvest windows for curing golden turmeric fingers.'
+    cx: 135,
+    cy: 266,
+    coordinates: '18.8° N, 77.5° E',
+    note: 'Warm tropical growing seasons followed by dry winter harvest windows for curing golden turmeric fingers with high natural curcumin.'
   },
   {
     id: 'south',
+    shortTag: 'Southern Hills',
     label: 'Southern Forest Hills · [SOURCING REGION]',
+    statesText: 'Kerala · Karnataka · Tamil Nadu · Western Ghats',
     spices: 'Black Peppercorns · Green Cardamom Pods',
-    cx: 168,
-    cy: 355,
-    note: 'Shaded forest canopies and monsoon mists where pepper vines and cardamom pods develop complex essential oils.'
+    cx: 122,
+    cy: 382,
+    coordinates: '10.2° N, 76.5° E',
+    note: 'Shaded forest canopies and monsoon mists along the Western Ghats where pepper vines and cardamom pods develop complex essential oils.'
   }
 ];
 
 export const IndiaSourcingMap: React.FC = () => {
   const [activePin, setActivePin] = useState<MapPinRegion>(INDIA_MAP_PINS[3]);
+  const [hoveredState, setHoveredState] = useState<string | null>(null);
   const [activeStage, setActiveStage] = useState<string>('farms');
+
+  const handleStateClick = (zoneId: MapPinRegion['id'] | null) => {
+    if (!zoneId) return;
+    const found = INDIA_MAP_PINS.find((p) => p.id === zoneId);
+    if (found) setActivePin(found);
+  };
 
   return (
     <div className="space-y-16">
       {/* Interactive Botanical India Map + Regional Notes */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center bg-[#EFECE3] border border-[#E2DDD2] p-6 sm:p-10 lg:p-12">
-        {/* Left: Illustrated SVG Map of India's Spice Belts */}
+        {/* Left: Cartographically Accurate SVG Map of India's Spice Belts */}
         <div className="lg:col-span-5 flex flex-col items-center">
-          <div className="relative w-full max-w-[340px] aspect-[3/4] bg-[#F7F4ED] border border-[#D5CFC2] p-6 flex items-center justify-center">
-            <span className="absolute top-3 left-4 text-[10px] font-mono-spec uppercase tracking-[0.18em] text-[#847E74]">
-              Botanical Atlas · India
-            </span>
+          <div className="relative w-full max-w-[380px] aspect-[400/450] bg-[#F7F4ED] border border-[#D5CFC2] p-4 sm:p-5 flex items-center justify-center shadow-xs">
+            <div className="absolute top-3 left-4 right-4 flex items-center justify-between pointer-events-none">
+              <span className="text-[10px] font-mono-spec uppercase tracking-[0.18em] text-[#6D4C38]">
+                Botanical Atlas · India
+              </span>
+              <span className="text-[10px] font-mono-spec text-[#847E74]">
+                {hoveredState ? hoveredState : activePin.coordinates}
+              </span>
+            </div>
+
             <svg
-              viewBox="0 0 360 440"
-              className="w-full h-full"
+              viewBox="0 0 400 450"
+              className="w-full h-full select-none"
               role="img"
-              aria-label="Illustrated map of Indian spice growing climatic zones"
+              aria-label="Cartographic map of India highlighting spice-growing states and agro-climatic zones"
             >
-              {/* Subtle latitude/longitude grid lines */}
-              <line x1="0" y1="110" x2="360" y2="110" stroke="#E2DDD2" strokeDasharray="3 3" />
-              <line x1="0" y1="220" x2="360" y2="220" stroke="#E2DDD2" strokeDasharray="3 3" />
-              <line x1="0" y1="330" x2="360" y2="330" stroke="#E2DDD2" strokeDasharray="3 3" />
-              <line x1="180" y1="0" x2="180" y2="440" stroke="#E2DDD2" strokeDasharray="3 3" />
+              <defs>
+                <filter id="map-shadow" x="-5%" y="-5%" width="110%" height="110%">
+                  <feDropShadow dx="0" dy="2" stdDeviation="2.5" floodColor="#182B21" floodOpacity="0.08" />
+                </filter>
+              </defs>
 
-              {/* Stylized Subcontinent Outline */}
-              <path
-                d="M155,32 L188,42 L195,70 L182,98 L215,132 L262,148 L298,142 L310,168 L272,198 L245,215 L228,255 L205,305 L186,375 L168,405 L150,375 L132,308 L115,245 L82,222 L68,192 L95,168 L112,135 L135,95 L138,55 Z"
-                fill="#EFECE3"
-                stroke="#182B21"
-                strokeWidth="1.5"
-              />
+              {/* Subtle Cartographic Graticule Lines */}
+              <line x1="0" y1="105" x2="400" y2="105" stroke="#E5E0D4" strokeWidth="0.75" strokeDasharray="3 3" />
+              <line x1="0" y1="210" x2="400" y2="210" stroke="#E5E0D4" strokeWidth="0.75" strokeDasharray="3 3" />
+              <line x1="0" y1="315" x2="400" y2="315" stroke="#E5E0D4" strokeWidth="0.75" strokeDasharray="3 3" />
+              <line x1="130" y1="0" x2="130" y2="450" stroke="#E5E0D4" strokeWidth="0.75" strokeDasharray="3 3" />
+              <line x1="260" y1="0" x2="260" y2="450" stroke="#E5E0D4" strokeWidth="0.75" strokeDasharray="3 3" />
 
-              {/* Connecting Trade Route Curve */}
+              {/* Tropic of Cancer Reference Line (~23.5°N) */}
+              <line x1="0" y1="203" x2="400" y2="203" stroke="#C89236" strokeOpacity="0.35" strokeWidth="0.8" strokeDasharray="2 4" />
+              <text x="392" y="199" textAnchor="end" className="fill-[#847E74] text-[7px] font-mono-spec uppercase tracking-widest">
+                23.5°N Tropic of Cancer
+              </text>
+
+              {/* Official State & UT Polygons of India */}
+              <g filter="url(#map-shadow)">
+                {INDIA_STATE_PATHS.map((state) => {
+                  const isSelectedZone = state.zoneId === activePin.id;
+                  const isOtherSpiceZone = state.zoneId !== null && !isSelectedZone;
+
+                  return (
+                    <path
+                      key={state.name}
+                      d={state.d}
+                      onClick={() => handleStateClick(state.zoneId)}
+                      onMouseEnter={() => setHoveredState(state.name)}
+                      onMouseLeave={() => setHoveredState(null)}
+                      fill={
+                        isSelectedZone
+                          ? '#D8B575'
+                          : isOtherSpiceZone
+                          ? '#E6E1D3'
+                          : '#EFECE3'
+                      }
+                      stroke={isSelectedZone ? '#182B21' : '#8C857B'}
+                      strokeWidth={isSelectedZone ? '1.1' : '0.65'}
+                      strokeLinejoin="round"
+                      className={`transition-colors duration-300 ${
+                        state.zoneId ? 'cursor-pointer hover:opacity-90' : ''
+                      }`}
+                    >
+                      <title>{state.name}</title>
+                    </path>
+                  );
+                })}
+              </g>
+
+              {/* Connecting Botanical Trade Route Curve */}
               <path
-                d="M165,78 Q112,195 185,255 T168,355"
+                d="M101,62 Q62,135 71,199 Q105,235 135,266 Q128,325 122,382"
                 fill="none"
-                stroke="#C89236"
-                strokeWidth="1.2"
-                strokeDasharray="4 4"
+                stroke="#182B21"
+                strokeOpacity="0.55"
+                strokeWidth="1.25"
+                strokeDasharray="3.5 3.5"
+                className="pointer-events-none"
               />
 
-              {/* Interactive Region Pins */}
+              {/* Interactive Agro-Climatic Region Pins */}
               {INDIA_MAP_PINS.map((pin) => {
                 const isSelected = activePin.id === pin.id;
                 return (
@@ -171,29 +240,79 @@ export const IndiaSourcingMap: React.FC = () => {
                     className="cursor-pointer"
                   >
                     {isSelected && (
-                      <circle
-                        cx={pin.cx}
-                        cy={pin.cy}
-                        r="16"
-                        fill="#C89236"
-                        fillOpacity="0.25"
-                      />
+                      <>
+                        <circle
+                          cx={pin.cx}
+                          cy={pin.cy}
+                          r="18"
+                          fill="#C89236"
+                          fillOpacity="0.22"
+                        />
+                        <circle
+                          cx={pin.cx}
+                          cy={pin.cy}
+                          r="11"
+                          fill="none"
+                          stroke="#182B21"
+                          strokeWidth="1"
+                          strokeDasharray="2 2"
+                        />
+                      </>
                     )}
                     <circle
                       cx={pin.cx}
                       cy={pin.cy}
-                      r={isSelected ? '7' : '5.5'}
+                      r={isSelected ? '6.5' : '5'}
                       fill={isSelected ? '#182B21' : '#C89236'}
                       stroke="#F7F4ED"
-                      strokeWidth="2"
+                      strokeWidth="1.8"
                     />
+                    {/* Pin Callout Label */}
+                    <g
+                      transform={`translate(${pin.cx + 11}, ${pin.cy + 3})`}
+                      className="pointer-events-none"
+                    >
+                      <rect
+                        x="-3"
+                        y="-9"
+                        width={pin.shortTag.length * 4.7 + 8}
+                        height="13"
+                        rx="1.5"
+                        fill={isSelected ? '#182B21' : '#F7F4ED'}
+                        fillOpacity={isSelected ? '0.95' : '0.88'}
+                        stroke={isSelected ? '#182B21' : '#D5CFC2'}
+                        strokeWidth="0.6"
+                      />
+                      <text
+                        x="1"
+                        y="0"
+                        className={`text-[7.5px] font-mono-spec uppercase tracking-wider ${
+                          isSelected ? 'fill-[#F7F4ED]' : 'fill-[#1C1B18]'
+                        }`}
+                      >
+                        {pin.shortTag}
+                      </text>
+                    </g>
                   </g>
                 );
               })}
+
+              {/* Sea / Ocean Labels */}
+              <text x="38" y="345" className="fill-[#9C9589] text-[7.5px] font-serif-editorial italic tracking-widest pointer-events-none">
+                Arabian Sea
+              </text>
+              <text x="245" y="325" className="fill-[#9C9589] text-[7.5px] font-serif-editorial italic tracking-widest pointer-events-none">
+                Bay of Bengal
+              </text>
             </svg>
-            <span className="absolute bottom-3 inset-x-4 text-center text-[10px] text-[#5A564E]">
-              Select a marker to explore agro-climatic spice zones
-            </span>
+
+            <div className="absolute bottom-2.5 inset-x-4 flex items-center justify-between text-[10px] text-[#5A564E]">
+              <span className="flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 inline-block bg-[#D8B575] border border-[#182B21]" />
+                Active Spice Belt
+              </span>
+              <span>Click a region or marker</span>
+            </div>
           </div>
         </div>
 
@@ -223,14 +342,30 @@ export const IndiaSourcingMap: React.FC = () => {
                       : 'bg-[#F7F4ED] text-[#1C1B18] border-[#D5CFC2] hover:border-[#182B21]'
                   }`}
                 >
+                  <div className="flex items-center justify-between gap-2">
+                    <p
+                      className={`text-[10px] uppercase tracking-[0.16em] font-mono-spec ${
+                        isSelected ? 'text-[#C89236]' : 'text-[#6D4C38]'
+                      }`}
+                    >
+                      {pin.spices}
+                    </p>
+                    <span
+                      className={`text-[10px] font-mono-spec ${
+                        isSelected ? 'text-[#D7D2C8]' : 'text-[#847E74]'
+                      }`}
+                    >
+                      {pin.coordinates}
+                    </span>
+                  </div>
+                  <p className="font-serif-editorial text-lg mt-1">{pin.label}</p>
                   <p
-                    className={`text-[10px] uppercase tracking-[0.16em] font-mono-spec ${
-                      isSelected ? 'text-[#C89236]' : 'text-[#6D4C38]'
+                    className={`text-[11px] mt-1 ${
+                      isSelected ? 'text-[#D7D2C8]' : 'text-[#5A564E]'
                     }`}
                   >
-                    {pin.spices}
+                    {pin.statesText}
                   </p>
-                  <p className="font-serif-editorial text-lg mt-1">{pin.label}</p>
                 </button>
               );
             })}
@@ -238,9 +373,14 @@ export const IndiaSourcingMap: React.FC = () => {
 
           {/* Selected Zone Card */}
           <div className="p-5 bg-[#F7F4ED] border-l-2 border-[#C89236]">
-            <p className="text-xs uppercase tracking-[0.16em] text-[#6D4C38] font-medium">
-              Selected Zone Profile — {activePin.label}
-            </p>
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <p className="text-xs uppercase tracking-[0.16em] text-[#6D4C38] font-medium">
+                Selected Zone Profile — {activePin.label}
+              </p>
+              <span className="text-[11px] font-mono-spec text-[#182B21]">
+                {activePin.statesText}
+              </span>
+            </div>
             <p className="mt-2 text-sm text-[#5A564E] leading-relaxed">
               {activePin.note}
             </p>

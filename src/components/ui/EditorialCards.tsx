@@ -151,6 +151,8 @@ export const ArticleCard: React.FC<{ article: JournalArticle }> = ({ article }) 
   );
 };
 
+import { subscribeToNewsletter } from '../../services/backendService';
+
 /* 4. NEWSLETTER */
 export const Newsletter: React.FC<{ variant?: 'footer' | 'section' }> = ({
   variant = 'footer'
@@ -158,9 +160,10 @@ export const Newsletter: React.FC<{ variant?: 'footer' | 'section' }> = ({
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.trim()) return;
+    await subscribeToNewsletter(email, variant);
     setSubmitted(true);
     setEmail('');
   };
