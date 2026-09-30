@@ -1,3 +1,5 @@
+<img width="1408" height="768" alt="image_46c6d6d3" src="https://github.com/user-attachments/assets/48c3feb2-d038-49c1-b92a-2e81cfb5286a" />
+
 # AARANYA SPICES — E-Commerce Platform & Supabase Backend
 
 > **Pure. Rich. Authentic.** — *The Essence of Indian Spices*
@@ -10,6 +12,7 @@ A production-ready D2C e-commerce platform built for **AARANYA SPICES**, celebra
 
 - **Editorial Luxury Storefront:** Crafted with Deep Forest Green (`#182B21`), Warm Ivory (`#F7F4ED`), Travertine Sand (`#EFECE3`), and Muted Turmeric Ochre (`#C89236`), pairing **Cormorant Garamond** headings with **Plus Jakarta Sans** UI typography and **JetBrains Mono** specifications.
 - **Complete 19-Route E-Commerce Experience:**
+
   - `/` — Editorial Homepage (Hero, Brand Story, Collections, Bestsellers, 5 Quality Pillars, Signature Turmeric Story, Interactive India Sourcing Map, Recipes, Journal, Newsletter)
   - `/shop`, `/shop/whole-spices`, `/shop/ground-spices`, `/shop/spice-blends` — Filterable & sortable catalogue (Search, Category, Pack Weight `100g | 200g | 500g`, Max Price, Availability, Mobile Filter Drawer)
   - `/shop/:slug` — Product Detail Page (`/shop/turmeric-powder`, `/shop/whole-cumin`, etc.) with multi-image gallery, weight selector, specification ledger, *Why You'll Love It*, *How to Use*, linked recipes, verified customer reviews, and FAQ accordion
